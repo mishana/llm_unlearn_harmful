@@ -3,6 +3,8 @@ aiohttp==3.8.6
 aiosignal==1.3.1
 async-timeout==4.0.3
 attrs==23.1.0
+auto-gptq
+bitsandbytes
 certifi==2023.7.22
 charset-normalizer==3.3.0
 datasets==2.14.5
@@ -15,6 +17,7 @@ idna==3.4
 multidict==6.0.4
 multiprocess==0.70.15
 numpy==1.26.1
+optimum
 packaging==23.2
 pandas==2.1.1
 peft==0.5.0
@@ -26,13 +29,18 @@ PyYAML==6.0.1
 regex==2023.10.3
 requests==2.31.0
 safetensors==0.4.0
+scipy
 six==1.16.0
 tokenizers==0.14.1
-torch==1.13.1+cu117
+torch
+torchvision
+torchaudio
 tqdm==4.66.1
 transformers==4.34.1
+trl
 typing_extensions==4.8.0
 tzdata==2023.3
 urllib3==2.0.7
 xxhash==3.4.1
 yarl==1.9.2
+

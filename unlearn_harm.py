@@ -20,6 +20,8 @@ from datasets import load_dataset
 from peft import AdaLoraConfig, TaskType, get_peft_model
 from torch.optim import AdamW
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_scheduler
+# from transformers import get_scheduler
+# from ctransformers import AutoModelForCausalLM, AutoTokenizer
 from utils import (
     compute_kl,
     create_pku_dataloader_from_dataset,
@@ -38,6 +40,8 @@ def main(args) -> None:
     accelerator = Accelerator()
     device = accelerator.device
     model = AutoModelForCausalLM.from_pretrained(args.model_name)
+    pass
+    # model = AutoModelForCausalLM.from_pretrained(args.model_name, model_file="llama-2-7b.Q5_K_M.gguf", gpu_layers=50)
     # If use LoRA.
     if args.use_lora:
         peft_config = AdaLoraConfig(
@@ -103,6 +107,9 @@ def main(args) -> None:
             ############ GA on answer only. ############
             bad_loss = get_answer_loss("ga", bad_batch, model, device=device)
 
+            if bad_loss >= args.max_bad_loss:
+                break
+
             ############ Random mismatch. ############
             random_loss = get_rand_ans_loss(
                 bad_batch,
@@ -139,8 +146,11 @@ def main(args) -> None:
             print(stats)
             idx += 1
 
+            if idx >= args.max_unlearn_steps:
+                break
+
             # Save model.
-            if idx % args.save_every == 0:
+            if (idx + 1) % args.save_every == 0:
                 model.save_pretrained(args.model_save_dir, from_pt=True)
     end_time = time.time()
     logging.info("Total time: %d sec" % (end_time - start_time))
