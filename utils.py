@@ -310,3 +310,18 @@ def get_rand_ans_loss(bad_batch, tokenizer, normal_ans, model, K=5, device="cuda
     random_loss = get_answer_loss("gd", batch_random, model, device=device)
 
     return random_loss
+
+def print_trainable_parameters(model):
+    """
+    Prints the number of trainable parameters in the model.
+    """
+    trainable_params = 0
+    all_param = 0
+    for _, param in model.named_parameters():
+        all_param += param.numel()
+        if param.requires_grad:
+            trainable_params += param.numel()
+    print(
+        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
+    )
+

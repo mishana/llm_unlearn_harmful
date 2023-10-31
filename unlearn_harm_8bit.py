@@ -17,9 +17,9 @@ import numpy as np
 import torch
 from accelerate import Accelerator
 from datasets import load_dataset
-from peft import AdaLoraConfig, TaskType, get_peft_model
+from peft import AdaLoraConfig, TaskType, get_peft_model, prepare_model_for_kbit_training, LoraConfig
 from torch.optim import AdamW
-from transformers import AutoModelForCausalLM, AutoTokenizer, get_scheduler
+from transformers import AutoModelForCausalLM, AutoTokenizer, get_scheduler, BitsAndBytesConfig
 # from transformers import get_scheduler
 # from ctransformers import AutoModelForCausalLM, AutoTokenizer
 from utils import (
@@ -29,7 +29,6 @@ from utils import (
     get_answer_loss,
     get_rand_ans_loss,
     get_truthfulQA_answers_plaintext,
-    print_trainable_parameters
 )
 
 torch.manual_seed(8888)
@@ -40,7 +39,25 @@ random.seed(8888)
 def main(args) -> None:
     accelerator = Accelerator()
     device = accelerator.device
-    model = AutoModelForCausalLM.from_pretrained(args.model_name)
+
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.float16
+    )
+
+    model = AutoModelForCausalLM.from_pretrained(args.model_name,
+                                                 quantization_config=bnb_config,
+
+                                                 device_map={"": 0})
+    # TODO: what's the purpose of this?
+    # model.config.use_cache = False
+    # model.config.pretraining_tp = 1
+
+    model.gradient_checkpointing_enable()
+    model = prepare_model_for_kbit_training(model)
+
     pass
     # model = AutoModelForCausalLM.from_pretrained(args.model_name, model_file="llama-2-7b.Q5_K_M.gguf", gpu_layers=50)
     # If use LoRA.
@@ -52,12 +69,34 @@ def main(args) -> None:
             lora_alpha=16,
             target_modules=["q_proj", "v_proj"],
         )
+        # peft_config = LoraConfig(
+        #     task_type=TaskType.CAUSAL_LM,
+        #     r=8,
+        #     lora_alpha=16,
+        #     inference_mode=False,
+        #     target_modules=["q_proj", "v_proj"],
+        #     # target_modules=[
+        #     #     "q_proj",
+        #     #     "k_proj",
+        #     #     "v_proj",
+        #     #     "o_proj",
+        #     #     "gate_proj",
+        #     #     "up_proj",
+        #     #     "down_proj",
+        #     #     "lm_head",
+        #     # ],
+        #     lora_dropout=0.05,  # Conventional
+        # )
         model = get_peft_model(model, peft_config)
 
-    print_trainable_parameters(model)
-
     model.to(device)
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.model_name,
+        model_max_length=512,
+        padding_side="right",
+        add_eos_token=True)
+
+    tokenizer.pad_token = tokenizer.eos_token
 
     # Load harmful data.
     train_dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF", split="330k_train")
@@ -97,9 +136,12 @@ def main(args) -> None:
     model.train()
 
     # Reference model for computing KL.
-    if args.mismatch:
-        pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name)
-        pretrained_model.to(device)
+    pretrained_model = AutoModelForCausalLM.from_pretrained(
+        args.model_name,
+        quantization_config=bnb_config,
+        device_map={"": 0})
+
+    # pretrained_model.to(device)
 
     # Start unlearning.
     bad_loss = 0.0
@@ -125,16 +167,13 @@ def main(args) -> None:
             )
 
             ############ KL on normal samples. ############
-            if args.mismatch:
-                normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
-            else:
-                normal_loss = 0.0
+            normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
 
             # Final loss = bad loss + random smoothing + normal loss.
             loss = (
-                args.bad_weight * bad_loss
-                + args.random_weight * random_loss
-                + args.normal_weight * normal_loss
+                    args.bad_weight * bad_loss
+                    + args.random_weight * random_loss
+                    + args.normal_weight * normal_loss
             )
 
             # Backprop.
@@ -176,9 +215,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-
-    parser.add_argument("--mismatch", action="store_true")
-
     parser.add_argument("--use_lora", action="store_true")
 
     parser.add_argument(
