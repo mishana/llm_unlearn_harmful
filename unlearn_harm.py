@@ -98,7 +98,7 @@ def main(args) -> None:
     model.train()
 
     # Reference model for computing KL.
-    if args.mismatch:
+    if not args.no_mismatch:
         pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name)
         pretrained_model.to(device)
 
@@ -126,7 +126,7 @@ def main(args) -> None:
             )
 
             ############ KL on normal samples. ############
-            if args.mismatch:
+            if not args.no_mismatch:
                 normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
             else:
                 normal_loss = 0.0
@@ -178,7 +178,7 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    parser.add_argument("--mismatch", action="store_true")
+    parser.add_argument("--no_mismatch", action="store_true")
 
     parser.add_argument("--use_lora", action="store_true")
 
