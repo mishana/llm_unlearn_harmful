@@ -58,6 +58,7 @@ def main(args) -> None:
 
     model.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
+    tokenizer.pad_token = tokenizer.eos_token
 
     # Load harmful data.
     train_dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF", split="330k_train")
