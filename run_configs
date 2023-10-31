@@ -1,0 +1,153 @@
+--max_unlearn_steps=1000
+
+
+##### Unlearning Harmfulness
+
+### OPT-1.3b
+
+# GA
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-5
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-6
+
+### OPT-2.7b
+
+# GA
+--batch_size=1
+--bad_weight=0.1
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-6
+
+# GA + Mismatch
+--batch_size=1
+--bad_weight=2
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-6
+
+### Llama-2-7b
+
+# GA
+--batch_size=2
+--bad_weight=0.05
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-4
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=2
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-4
+
+
+##### Unlearning Copyrighted Data
+
+### OPT-1.3b
+
+# GA
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-5
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-6
+
+### OPT-2.7b
+
+# GA
+--batch_size=1
+--bad_weight=0.1
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-6
+
+# GA + Mismatch
+--batch_size=1
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-6
+
+### Llama-2-7b
+
+# GA
+--batch_size=2
+--bad_weight=0.1
+--no_mismatch
+--random_weight=1
+--learning_rate=2e-4
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=0.1
+--normal_weight=1
+--random_weight=1
+--learning_rate=2e-4
+
+##### Unlearning Hallucinations
+
+### OPT-1.3b
+
+# GA
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=0.5
+--learning_rate=2e-5
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=0.5
+--learning_rate=2e-6
+
+### OPT-2.7b
+
+# GA
+--batch_size=1
+--bad_weight=0.1
+--no_mismatch
+--random_weight=0.5
+--learning_rate=2e-6
+
+# GA + Mismatch
+--batch_size=1
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=0.5
+--learning_rate=2e-6
+
+### Llama-2-7b
+
+# GA
+--batch_size=2
+--bad_weight=0.05
+--no_mismatch
+--random_weight=0.5
+--learning_rate=2e-4
+
+# GA + Mismatch
+--batch_size=2
+--bad_weight=0.05
+--normal_weight=1
+--random_weight=0.5
+--learning_rate=2e-4
