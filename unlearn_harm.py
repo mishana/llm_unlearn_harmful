@@ -40,7 +40,7 @@ random.seed(8888)
 def main(args) -> None:
     accelerator = Accelerator()
     device = accelerator.device
-    model = AutoModelForCausalLM.from_pretrained(args.model_name)
+    model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
     pass
     # model = AutoModelForCausalLM.from_pretrained(args.model_name, model_file="llama-2-7b.Q5_K_M.gguf", gpu_layers=50)
     # If use LoRA.
@@ -99,7 +99,7 @@ def main(args) -> None:
 
     # Reference model for computing KL.
     if not args.no_mismatch:
-        pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name)
+        pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
         pretrained_model.to(device)
 
     # Start unlearning.

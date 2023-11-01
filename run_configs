@@ -27,6 +27,30 @@ python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --rando
 --model_save_dir=models/opt_1.3b_unlearn_harm_mismatch
 --log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
 
+### MPT-1.3b
+
+# GA:
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --no_mismatch --random_weight=1 --lr=2e-5 --model_name=mosaicml/mpt-1b-redpajama-200b --model_save_dir=models/mpt_1b_unlearn_harm --log_file=logs/mpt_1b_unlearn_harm.log
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--lr=2e-5
+--model_name=mosaicml/mpt-1b-redpajama-200b
+--model_save_dir=models/mpt_1b_unlearn_harm
+--log_file=logs/mpt_1b_unlearn_harm.log
+
+# GA + Mismatch
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --random_weight=1 --lr=2e-6 --model_name=facebook/opt-1.3b --model_save_dir=models/opt_1.3b_unlearn_harm_mismatch --log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--lr=2e-6
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_harm_mismatch
+--log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
+
 ### OPT-2.7b
 
 # GA

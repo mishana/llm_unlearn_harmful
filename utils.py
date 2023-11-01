@@ -225,7 +225,7 @@ def get_answer_loss(operation, batch, model, device="cuda:0"):
         batch["start_locs"],
         batch["labels"].to(device),
     )
-    outputs = model(input_ids, attention_mask=attention_mask)
+    outputs = model(input_ids, attention_mask=attention_mask.bool())
     loss_fct = torch.nn.CrossEntropyLoss(reduction="none")
     # Shift one to predict next token.
     shift_logits = outputs.logits[:, :-1, :]
