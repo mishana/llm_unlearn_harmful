@@ -11,6 +11,9 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-5
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_harm
+--log_file=logs/opt_1.3b_unlearn_harm.log
 
 # GA + Mismatch
 --batch_size=2
@@ -18,6 +21,9 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_harm_mismatch
+--log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
 
 ### OPT-2.7b
 
@@ -27,6 +33,9 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_harm
+--log_file=logs/oopt_2.7b_unlearn_harm.log
 
 # GA + Mismatch
 --batch_size=1
@@ -34,6 +43,9 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_harm_mismatch
+--log_file=logs/opt_2.7b_unlearn_harm_mismatch.log
 
 ### Llama-2-7b
 
@@ -43,6 +55,10 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_harm
+--log_file=logs/llama27b_unlearn_harm.log
 
 # GA + Mismatch
 --batch_size=2
@@ -50,6 +66,10 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_harm_mismatch
+--log_file=logs/llama27b_unlearn_harm_mismatch.log
 
 
 ##### Unlearning Copyrighted Data
@@ -62,6 +82,9 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-5
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_copyright
+--log_file=logs/opt_1.3b_unlearn_copyright.log
 
 # GA + Mismatch
 --batch_size=2
@@ -69,6 +92,9 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_copyright_mismatch
+--log_file=logs/opt_1.3b_unlearn_copyright_mismatch.log
 
 ### OPT-2.7b
 
@@ -78,6 +104,9 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_copyright
+--log_file=logs/opt_2.7b_unlearn_copyright.log
 
 # GA + Mismatch
 --batch_size=1
@@ -85,6 +114,9 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_copyright_mismatch
+--log_file=logs/opt_2.7b_unlearn_copyright_mismatch.log
 
 ### Llama-2-7b
 
@@ -94,6 +126,10 @@
 --no_mismatch
 --random_weight=1
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_copyright
+--log_file=logs/llama27b_unlearn_copyright.log
 
 # GA + Mismatch
 --batch_size=2
@@ -101,6 +137,11 @@
 --normal_weight=1
 --random_weight=1
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_copyright_mismatch
+--log_file=logs/llama27b_unlearn_copyright_mismatch.log
+
 
 ##### Unlearning Hallucinations
 
@@ -112,6 +153,9 @@
 --no_mismatch
 --random_weight=0.5
 --learning_rate=2e-5
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_hallucinations
+--log_file=logs/opt_1.3b_unlearn_hallucinations.log
 
 # GA + Mismatch
 --batch_size=2
@@ -119,6 +163,9 @@
 --normal_weight=1
 --random_weight=0.5
 --learning_rate=2e-6
+--model_name=facebook/opt-1.3b
+--model_save_dir=models/opt_1.3b_unlearn_hallucinations_mismatch
+--log_file=logs/opt_1.3b_unlearn_hallucinations_mismatch.log
 
 ### OPT-2.7b
 
@@ -128,6 +175,9 @@
 --no_mismatch
 --random_weight=0.5
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_hallucinations
+--log_file=logs/opt_2.7b_unlearn_hallucinations.log
 
 # GA + Mismatch
 --batch_size=1
@@ -135,6 +185,9 @@
 --normal_weight=1
 --random_weight=0.5
 --learning_rate=2e-6
+--model_name=facebook/opt-2.7b
+--model_save_dir=models/opt_2.7b_unlearn_hallucinations_mismatch
+--log_file=logs/opt_2.7b_unlearn_hallucinations_mismatch.log
 
 ### Llama-2-7b
 
@@ -144,6 +197,10 @@
 --no_mismatch
 --random_weight=0.5
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_hallucinations
+--log_file=logs/llama27b_unlearn_hallucinations.log
 
 # GA + Mismatch
 --batch_size=2
@@ -151,3 +208,7 @@
 --normal_weight=1
 --random_weight=0.5
 --learning_rate=2e-4
+--use_lora
+--model_name=meta-llama/Llama-2-7b-hf
+--model_save_dir=models/llama27b_unlearn_hallucinations_mismatch
+--log_file=logs/llama27b_unlearn_hallucinations_mismatch.log
