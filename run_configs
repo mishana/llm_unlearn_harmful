@@ -27,6 +27,30 @@ python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --rando
 --model_save_dir=models/opt_1.3b_unlearn_harm_mismatch
 --log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
 
+### OPT-iml-1.3b
+
+# GA:
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --no_mismatch --random_weight=1 --lr=2e-5 --model_name=facebook/opt-iml-1.3b --model_save_dir=models/opt_iml_1.3b_unlearn_harm --log_file=logs/opt_iml_1.3b_unlearn_harm.log
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--lr=2e-5
+--model_name=facebook/opt-iml-1.3b
+--model_save_dir=models/opt_iml_1.3b_unlearn_harm
+--log_file=logs/opt_iml_1.3b_unlearn_harm.log
+
+# GA + Mismatch
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --random_weight=1 --lr=2e-6 --model_name=facebook/opt-iml-1.3b --model_save_dir=models/opt_iml_1.3b_unlearn_harm_mismatch --log_file=logs/opt_iml_1.3b_unlearn_harm_mismatch.log
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--lr=2e-6
+--model_name=facebook/opt-iml-1.3b
+--model_save_dir=models/opt_iml_1.3b_unlearn_harm_mismatch
+--log_file=logs/opt_iml_1.3b_unlearn_harm_mismatch.log
+
 ### MPT-1.3b
 
 # GA:
@@ -50,6 +74,54 @@ python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --rando
 --model_name=facebook/opt-1.3b
 --model_save_dir=models/opt_1.3b_unlearn_harm_mismatch
 --log_file=logs/opt_1.3b_unlearn_harm_mismatch.log
+
+### Falcon-1b
+
+# GA:
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --no_mismatch --random_weight=1 --lr=2e-5 --model_name=tiiuae/falcon-rw-1b --model_save_dir=models/falcon_1b_unlearn_harm --log_file=logs/falcon_1b_unlearn_harm.log
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--lr=2e-5
+--model_name=tiiuae/falcon-rw-1b
+--model_save_dir=models/falcon_1b_unlearn_harm
+--log_file=logs/falcon_1b_unlearn_harm.log
+
+# GA + Mismatch
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --random_weight=1 --lr=2e-6 --model_name=tiiuae/falcon-rw-1b --model_save_dir=models/falcon_1b_unlearn_harm_mismatch --log_file=logs/falcon_1b_unlearn_harm_mismatch.log
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--lr=2e-6
+--model_name=tiiuae/falcon-rw-1b
+--model_save_dir=models/falcon_1b_unlearn_harm_mismatch
+--log_file=logs/falcon_1b_unlearn_harm_mismatch.log
+
+### tinyLlama-1.1b
+
+# GA:
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --no_mismatch --random_weight=1 --lr=2e-5 --model_name=PY007/TinyLlama-1.1B-intermediate-step-480k-1T --model_save_dir=models/tinyllama_unlearn_harm --log_file=logs/tinyllama_unlearn_harm.log
+--batch_size=2
+--bad_weight=0.5
+--no_mismatch
+--random_weight=1
+--lr=2e-5
+--model_name=PY007/TinyLlama-1.1B-intermediate-step-480k-1T
+--model_save_dir=models/tinyllama_unlearn_harm
+--log_file=logs/tinyllama_unlearn_harm.log
+
+# GA + Mismatch
+python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --random_weight=1 --lr=2e-6 --model_name=PY007/TinyLlama-1.1B-intermediate-step-480k-1T --model_save_dir=models/tinyllama_unlearn_harm_mismatch --log_file=logs/tinyllama_unlearn_harm_mismatch.log
+--batch_size=2
+--bad_weight=0.5
+--normal_weight=1
+--random_weight=1
+--lr=2e-6
+--model_name=PY007/TinyLlama-1.1B-intermediate-step-480k-1T
+--model_save_dir=models/tinyllama_unlearn_harm_mismatch
+--log_file=logs/tinyllama_unlearn_harm_mismatch.log
 
 ### OPT-2.7b
 
