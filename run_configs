@@ -223,15 +223,16 @@ python unlearn_harm.py --batch_size=2 --bad_weight=2 --normal_weight=1 --random_
 ### Llama-2-7b
 
 # GA
+python unlearn_harm.py --batch_size=2 --bad_weight=0.1 --no_mismatch --random_weight=1 --lr=2e-4 --use_lora --model_name=meta-llama/Llama-2-7b-hf --model_save_dir=models/llama27b_unlearn_harm --log_file=logs/llama27b_unlearn_harm.log
 --batch_size=2
 --bad_weight=0.1
 --no_mismatch
 --random_weight=1
---learning_rate=2e-4
+--lr=2e-4
 --use_lora
 --model_name=meta-llama/Llama-2-7b-hf
---model_save_dir=models/llama27b_unlearn_copyright
---log_file=logs/llama27b_unlearn_copyright.log
+--model_save_dir=models/llama27b_unlearn_harm
+--log_file=logs/llama27b_unlearn_harm.log
 
 # GA + Mismatch
 --batch_size=2

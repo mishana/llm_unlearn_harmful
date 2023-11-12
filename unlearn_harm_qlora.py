@@ -136,10 +136,11 @@ def main(args) -> None:
     model.train()
 
     # Reference model for computing KL.
-    pretrained_model = AutoModelForCausalLM.from_pretrained(
-        args.model_name,
-        quantization_config=bnb_config,
-        device_map={"": 0})
+    if not args.no_mismatch:
+        pretrained_model = AutoModelForCausalLM.from_pretrained(
+            args.model_name,
+            quantization_config=bnb_config,
+            device_map={"": 0})
 
     # pretrained_model.to(device)
 
@@ -167,7 +168,10 @@ def main(args) -> None:
             )
 
             ############ KL on normal samples. ############
-            normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
+            if not args.no_mismatch:
+                normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
+            else:
+                normal_loss = 0
 
             # Final loss = bad loss + random smoothing + normal loss.
             loss = (
@@ -215,6 +219,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
+
+    parser.add_argument("--no_mismatch", action="store_true")
+
     parser.add_argument("--use_lora", action="store_true")
 
     parser.add_argument(

@@ -56,7 +56,7 @@ def main(args) -> None:
 
     print_trainable_parameters(model)
 
-    model.to(device)
+    # model.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     tokenizer.pad_token = tokenizer.eos_token
 

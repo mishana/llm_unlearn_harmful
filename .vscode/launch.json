@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "qlora_unlearn_harm",
+            "type": "python",
+            "request": "launch",
+            "program": "unlearn_harm_qlora.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--batch_size=2",
+                "--bad_weight=0.1",
+                "--no_mismatch",
+                "--random_weight=1",
+                "--lr=2e-4",
+                "--use_lora",
+                "--model_name=meta-llama/Llama-2-7b-hf",
+                "--model_save_dir=models/llama27b_unlearn_harm_qlora",
+                "--log_file=logs/llama27b_unlearn_harm.log_qlora",
+            ]
+        },
+        {
+            "name": "unlearn_harm",
+            "type": "python",
+            "request": "launch",
+            "program": "unlearn_harm.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--batch_size=2",
+                "--bad_weight=0.1",
+                "--no_mismatch",
+                "--random_weight=1",
+                "--lr=2e-4",
+                "--use_lora",
+                "--model_name=meta-llama/Llama-2-7b-hf",
+                "--model_save_dir=models/llama27b_unlearn_harm",
+                "--log_file=logs/llama27b_unlearn_harm.log",
+            ]
+        }
+    ]
+}

@@ -215,6 +215,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
+    parser.add_argument("--no_mismatch", action="store_true")
+    
     parser.add_argument("--use_lora", action="store_true")
 
     parser.add_argument(
