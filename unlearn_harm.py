@@ -32,6 +32,9 @@ from utils import (
     print_trainable_parameters
 )
 
+from wrappers import UnlearningModelWrapper
+
+
 torch.manual_seed(8888)
 np.random.seed(8888)
 random.seed(8888)
@@ -40,21 +43,20 @@ random.seed(8888)
 def main(args) -> None:
     accelerator = Accelerator()
     device = accelerator.device
-    model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
-    pass
-    # model = AutoModelForCausalLM.from_pretrained(args.model_name, model_file="llama-2-7b.Q5_K_M.gguf", gpu_layers=50)
-    # If use LoRA.
-    if args.use_lora:
-        peft_config = AdaLoraConfig(
-            task_type=TaskType.CAUSAL_LM,
-            inference_mode=False,
-            r=32,
-            lora_alpha=16,
-            target_modules=["q_proj", "v_proj"],
-        )
-        model = get_peft_model(model, peft_config)
+    model_wrapper = UnlearningModelWrapper(args.model_name, args.use_lora)
+    
+    # # If use LoRA.
+    # if args.use_lora:
+    #     peft_config = AdaLoraConfig(
+    #         task_type=TaskType.CAUSAL_LM,
+    #         inference_mode=False,
+    #         r=32,
+    #         lora_alpha=16,
+    #         target_modules=["q_proj", "v_proj"],
+    #     )
+    #     model_wrapper.new_model = get_peft_model(model_wrapper.new_model, peft_config)
 
-    print_trainable_parameters(model)
+    # print_trainable_parameters(model_wrapper.new_model)
 
     # model.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
@@ -86,21 +88,19 @@ def main(args) -> None:
     )
 
     (
-        model,
+        model_wrapper,
         optimizer,
         train_bad_loader,
         train_normal_loader,
         lr_scheduler,
     ) = accelerator.prepare(
-        model, optimizer, train_bad_loader, train_normal_loader, lr_scheduler
+        model_wrapper, optimizer, train_bad_loader, train_normal_loader, lr_scheduler
     )
 
-    model.train()
+    model_wrapper.new_model.train()
 
     # Reference model for computing KL.
-    if not args.no_mismatch:
-        pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
-        pretrained_model.to(device)
+    # pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
 
     # Start unlearning.
     bad_loss = 0.0
@@ -116,20 +116,20 @@ def main(args) -> None:
                 break
 
             ############ Random mismatch. ############
-            random_loss = get_rand_ans_loss(
-                bad_batch,
-                tokenizer,
-                normal_ans,
-                model,
-                K=5,
-                device=device,
-            )
+            if not args.no_mismatch:
+                random_loss = get_rand_ans_loss(
+                    bad_batch,
+                    tokenizer,
+                    normal_ans,
+                    model,
+                    K=5,
+                    device=device,
+                )
+            else:
+                random_loss = 0.0
 
             ############ KL on normal samples. ############
-            if not args.no_mismatch:
-                normal_loss = compute_kl(pretrained_model, model, normal_batch, device)
-            else:
-                normal_loss = 0.0
+            normal_loss = compute_kl(model_wrapper.orig_model, model_wrapper.new_model, normal_batch, device)
 
             # Final loss = bad loss + random smoothing + normal loss.
             loss = (

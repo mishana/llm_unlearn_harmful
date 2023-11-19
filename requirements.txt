@@ -45,4 +45,5 @@ urllib3==2.0.7
 xxhash==3.4.1
 yarl==1.9.2
 deepspeed
+ipykernel
 
