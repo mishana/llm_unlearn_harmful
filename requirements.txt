@@ -46,4 +46,5 @@ xxhash==3.4.1
 yarl==1.9.2
 deepspeed
 ipykernel
-
+ipywidgets
+notebook
