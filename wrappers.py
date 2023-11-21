@@ -23,4 +23,4 @@ class UnlearningModelWrapper(nn.Module):
         print_trainable_parameters(self.new_model)
         sleep(10)
 
-        self.orig_model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, device_map="auto")
+        self.orig_model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
