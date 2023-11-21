@@ -24,3 +24,5 @@ class UnlearningModelWrapper(nn.Module):
         sleep(10)
 
         self.orig_model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
+        for param in self.orig_model.parameters():
+            param.requires_grad = False
