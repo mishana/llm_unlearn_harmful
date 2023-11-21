@@ -20,12 +20,8 @@ class UnlearningModelWrapper(nn.Module):
             )
             self.new_model = get_peft_model(self.new_model, peft_config)
 
-        print("NEW MODEL")
         print_trainable_parameters(self.new_model)
 
         self.orig_model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
         for param in self.orig_model.parameters():
             param.requires_grad = False
-
-        print("ORIG MODEL")
-        print_trainable_parameters(self.new_model)
