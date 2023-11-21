@@ -63,7 +63,7 @@ def main(args) -> None:
     tokenizer.pad_token = tokenizer.eos_token
 
     # Load harmful data.
-    train_dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF", split="330k_train")
+    train_dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF", split="train")
     train_bad_loader = create_pku_dataloader_from_dataset(
         tokenizer, train_dataset, batch_size=args.batch_size
     )
