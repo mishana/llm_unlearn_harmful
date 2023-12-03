@@ -104,19 +104,19 @@ def main(args) -> None:
     # pretrained_model = AutoModelForCausalLM.from_pretrained(args.model_name, trust_remote_code=True)
 
     # Start unlearning.
-    bad_loss = 0.0
+    bad_loss = torch.zeros(1)
     idx = 0
     start_time = time.time()
     # Stop if bad loss is big enough or reaching max step.
-    while bad_loss < args.max_bad_loss and idx < args.max_unlearn_steps:
+    while -bad_loss.item() < args.max_bad_loss and idx < args.max_unlearn_steps:
         for bad_batch, normal_batch in zip(train_bad_loader, train_normal_loader):
-            ############ GA on answer only. ############
+            ############ GA on bad answer only. ############
             if args.bad_weight > 0:
                 bad_loss = get_answer_loss(
                     "ga", bad_batch, model_wrapper.new_model, device=device
                 )
 
-                if bad_loss >= args.max_bad_loss:
+                if -bad_loss.item() >= args.max_bad_loss:
                     print(
                         f"=====================Stop at bad loss: {bad_loss:.2f}========================"
                     )
@@ -125,7 +125,7 @@ def main(args) -> None:
                 bad_loss = 0.0
 
             ############ Random mismatch. ############
-            if not args.no_mismatch:
+            if not args.no_mismatch and args.random_weight > 0:
                 random_loss = get_rand_ans_loss(
                     bad_batch,
                     tokenizer,
@@ -138,12 +138,15 @@ def main(args) -> None:
                 random_loss = 0.0
 
             ############ KL on normal samples. ############
-            normal_loss = compute_kl(
-                model_wrapper.new_model.model,
-                model_wrapper.new_model,
-                normal_batch,
-                device,
-            )
+            if args.normal_weight > 0:
+                normal_loss = compute_kl(
+                    model_wrapper.new_model.model,
+                    model_wrapper.new_model,
+                    normal_batch,
+                    device,
+                )
+            else:
+                normal_loss = 0.0
 
             # Final loss = bad loss + random smoothing + normal loss.
             loss = (
@@ -194,7 +197,7 @@ def upload_to_hf(args):
     api = HfApi()
     # api.create_repo(repo_id=repo_id, private=True)
     future = api.upload_folder(  # Upload in the background (non-blocking action)
-        repo_id=args.repo_id,
+        repo_id=args.hf_repo_id,
         folder_path=args.model_save_dir,
         run_as_future=True,
         commit_message=f"Unlearn Harm with the following arguments: \n{args}",
