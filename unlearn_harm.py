@@ -20,6 +20,7 @@ from datasets import load_dataset
 from peft import AdaLoraConfig, TaskType, get_peft_model
 from torch.optim import AdamW
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_scheduler
+
 # from transformers import get_scheduler
 # from ctransformers import AutoModelForCausalLM, AutoTokenizer
 from utils import (
@@ -29,7 +30,7 @@ from utils import (
     get_answer_loss,
     get_rand_ans_loss,
     get_truthfulQA_answers_plaintext,
-    print_trainable_parameters
+    print_trainable_parameters,
 )
 
 from wrappers import UnlearningModelWrapper
@@ -110,11 +111,18 @@ def main(args) -> None:
     while bad_loss < args.max_bad_loss and idx < args.max_unlearn_steps:
         for bad_batch, normal_batch in zip(train_bad_loader, train_normal_loader):
             ############ GA on answer only. ############
-            bad_loss = get_answer_loss("ga", bad_batch, model_wrapper.new_model, device=device)
+            if args.bad_weight > 0:
+                bad_loss = get_answer_loss(
+                    "ga", bad_batch, model_wrapper.new_model, device=device
+                )
 
-            if bad_loss >= args.max_bad_loss:
-                print(f"=====================Stop at bad loss: {bad_loss:.2f}========================")
-                break
+                if bad_loss >= args.max_bad_loss:
+                    print(
+                        f"=====================Stop at bad loss: {bad_loss:.2f}========================"
+                    )
+                    break
+            else:
+                bad_loss = 0.0
 
             ############ Random mismatch. ############
             if not args.no_mismatch:
@@ -130,7 +138,12 @@ def main(args) -> None:
                 random_loss = 0.0
 
             ############ KL on normal samples. ############
-            normal_loss = compute_kl(model_wrapper.new_model.model, model_wrapper.new_model, normal_batch, device)
+            normal_loss = compute_kl(
+                model_wrapper.new_model.model,
+                model_wrapper.new_model,
+                normal_batch,
+                device,
+            )
 
             # Final loss = bad loss + random smoothing + normal loss.
             loss = (
@@ -161,18 +174,31 @@ def main(args) -> None:
 
             # Save model.
             if (idx + 1) % args.save_every == 0:
-                model_wrapper.new_model.save_pretrained(args.model_save_dir, from_pt=True)
+                model_wrapper.new_model.save_pretrained(
+                    args.model_save_dir, from_pt=True
+                )
     end_time = time.time()
     logging.info("Total time: %d sec" % (end_time - start_time))
 
-    if args.use_lora:
-        model_wrapper.new_model = model_wrapper.new_model.merge_and_unload()
+    # if args.use_lora:
+    #     model_wrapper.new_model = model_wrapper.new_model.merge_and_unload()
 
     # Save final model.
     model_wrapper.new_model.save_pretrained(args.model_save_dir, from_pt=True)
     logging.info("Unlearning finished")
 
-    return
+
+def upload_to_hf(args):
+    from huggingface_hub import HfApi
+
+    api = HfApi()
+    # api.create_repo(repo_id=repo_id, private=True)
+    future = api.upload_folder(  # Upload in the background (non-blocking action)
+        repo_id=args.repo_id,
+        folder_path=args.model_save_dir,
+        run_as_future=True,
+        commit_message=f"Unlearn Harm with the following arguments: \n{args}",
+    )
 
 
 if __name__ == "__main__":
@@ -236,6 +262,11 @@ if __name__ == "__main__":
         default="logs/default.log",
         help="Log file name",
     )
+    parser.add_argument(
+        "--hf_repo_id",
+        type=str,
+        help="HuggingFace Repo ID",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -248,3 +279,5 @@ if __name__ == "__main__":
     for arg in vars(args):
         logging.info(f"{arg}: {getattr(args, arg)}")
     main(args)
+    if args.hf_repo_id:
+        upload_to_hf(args)
