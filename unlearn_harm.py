@@ -61,7 +61,9 @@ def main(args) -> None:
 
     # model.to(device)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-    tokenizer.pad_token = tokenizer.eos_token
+    # tokenizer.pad_token = tokenizer.bos_token
+    # tokenizer.pad_token = '[PAD]'
+    # tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
     # Load harmful data.
     train_dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF", split="train")
@@ -113,7 +115,11 @@ def main(args) -> None:
             ############ GA on bad answer only. ############
             if args.bad_weight > 0:
                 bad_loss = get_answer_loss(
-                    "ga", bad_batch, model_wrapper.new_model, device=device
+                    "ga",
+                    bad_batch,
+                    model_wrapper.new_model,
+                    tokenizer=tokenizer,
+                    device=device,
                 )
 
                 if -bad_loss.item() >= args.max_bad_loss:

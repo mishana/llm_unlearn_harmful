@@ -205,7 +205,7 @@ def compute_kl(pretrained_model, current_model, batch, device):
     return loss
 
 
-def get_answer_loss(operation, batch, model, device="cuda:0"):
+def get_answer_loss(operation, batch, model, tokenizer, device="cuda:0"):
     """
     Compute the loss on the answer (i.e. y) part.
 
@@ -245,8 +245,9 @@ def get_answer_loss(operation, batch, model, device="cuda:0"):
         position_weight[one_st:] = 1  # only focus on answer part
 
         # Ignore the padding part.
-        position_weight[one_inp == 1] = 0
+        position_weight[one_inp == tokenizer.pad_token_id] = 0
         if position_weight.sum() > 0:
+            # normalize the weights, so that summing the "weighted" losses will give the mean of the losses.
             position_weight = position_weight / position_weight.sum()
 
         one_loss = (position_weight[:-1] * position_loss).sum()
@@ -307,9 +308,10 @@ def get_rand_ans_loss(bad_batch, tokenizer, normal_ans, model, K=5, device="cuda
     batch_random = data_collator(batch_random_features)
 
     # GD on answer.
-    random_loss = get_answer_loss("gd", batch_random, model, device=device)
+    random_loss = get_answer_loss("gd", batch_random, model, tokenizer=tokenizer, device=device)
 
     return random_loss
+
 
 def print_trainable_parameters(model):
     """
@@ -324,4 +326,3 @@ def print_trainable_parameters(model):
     print(
         f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
     )
-

@@ -127,14 +127,17 @@ python unlearn_harm.py --batch_size=2 --bad_weight=0.5 --normal_weight=1 --rando
 
 # GA
 python unlearn_harm.py --batch_size=1 --bad_weight=0.1 --no_mismatch --random_weight=1 --lr=2e-6 --model_name=facebook/opt-2.7b --model_save_dir=models/opt_2.7b_unlearn_harm --log_file=logs/oopt_2.7b_unlearn_harm.log
+accelerate launch unlearn_harm.py --batch_size=2 --bad_weight=0.1 --no_mismatch --random_weight=1 --lr=2e-6 --model_name=facebook/opt-2.7b --model_save_dir=models/opt_2.7b_unlearn_harm --log_file=logs/opt_2.7b_unlearn_harm.log --hf_repo_id=odnurih/opt-2.7b_unlearn_harm
 --batch_size=1
 --bad_weight=0.1
 --no_mismatch
---random_weight=1
+--normal_weight=1
 --lr=2e-6
 --model_name=facebook/opt-2.7b
 --model_save_dir=models/opt_2.7b_unlearn_harm
 --log_file=logs/oopt_2.7b_unlearn_harm.log
+--hf_repo_id=odnurih/opt-2.7b_unlearn_harm
+
 
 # GA + Mismatch
 python unlearn_harm.py --batch_size=1 --bad_weight=2 --normal_weight=1 --random_weight=1 --lr=2e-6 --model_name=facebook/opt-2.7b --model_save_dir=models/opt_2.7b_unlearn_harm_mismatch --log_file=logs/opt_2.7b_unlearn_harm_mismatch.log
@@ -164,16 +167,18 @@ python unlearn_harm.py --batch_size=1 --bad_weight=0.05 --no_mismatch --random_w
 
 # GA + Mismatch
 accelerate launch unlearn_harm.py --batch_size=1 --bad_weight=2 --normal_weight=10 --random_weight=1 --lr=2e-4 --use_lora --model_name=meta-llama/Llama-2-7b-hf --model_save_dir=models/llama27b_unlearn_harm_mismatch --log_file=logs/llama27b_unlearn_harm_mismatch.log
-python unlearn_harm.py --batch_size=1 --bad_weight=0.05 --normal_weight=1 --random_weight=1 --lr=2e-4 --use_lora --model_name=meta-llama/Llama-2-7b-hf --model_save_dir=models/llama27b_unlearn_harm_mismatch --log_file=logs/llama27b_unlearn_harm_mismatch.log
---batch_size=1
+python unlearn_harm.py --batch_size=2 --bad_weight=2 --normal_weight=1 --random_weight=1 --lr=2e-4 --use_lora --model_name=meta-llama/Llama-2-7b-hf --model_save_dir=models/llama27b_unlearn_harm_mismatch --log_file=logs/llama27b_unlearn_harm_mismatch.log --hf_repo_id=odnurih/Llama-2-7b-hf-unlearn-harm-mismatch
+accelerate launch unlearn_harm.py --batch_size=2 --bad_weight=0.05 --normal_weight=2 --random_weight=1 --lr=2e-4 --use_lora --model_name=meta-llama/Llama-2-7b-hf --model_save_dir=models/llama27b_unlearn_harm_mismatch --log_file=logs/llama27b_unlearn_harm_mismatch.log --hf_repo_id=odnurih/Llama-2-7b-hf-unlearn-harm-mismatch
+--batch_size=2
 --bad_weight=2
---normal_weight=10
+--normal_weight=1
 --random_weight=1
 --lr=2e-4
 --use_lora
 --model_name=meta-llama/Llama-2-7b-hf
 --model_save_dir=models/llama27b_unlearn_harm_mismatch
 --log_file=logs/llama27b_unlearn_harm_mismatch.log
+--hf_repo_id=odnurih/Llama-2-7b-hf-unlearn-harm-mismatch
 
 
 ##### Unlearning Copyrighted Data
